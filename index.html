@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGIMA.Платформа | Многофункциональная система управления цифровыми активами</title>
+    <style>
+        :root {
+            --bg-glass: rgba(255, 255, 255, 0.45);
+            --bg-glass-heavy: rgba(255, 255, 255, 0.75);
+            --border-glass: rgba(255, 255, 255, 0.6);
+            --accent-red: #ff3838;
+            --accent-pink: #ffe5e5;
+            --accent-rose: #ff9999;
+            --accent-neon-pink: #ff007f;
+            --text-dark: #1e1e24;
+            --text-muted: #5c6470;
+            --glow: rgba(255, 56, 56, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.5;
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f5 40%, #f7f9fc 100%);
+            background-attachment: fixed;
+        }
+
+        /* Навигационная панель */
+        header {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text-dark);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+            text-shadow: 0 0 10px rgba(255, 56, 56, 0.3);
+        }
+
+        nav {
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-red);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-link.active-tab {
+            background: var(--text-dark);
+            color: #fff;
+        }
+
+        .btn-header {
+            background: linear-gradient(135deg, var(--text-dark), #333);
+            border: none;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .btn-header:hover {
+            background: linear-gradient(135deg, var(--accent-red), #ff5555);
+            box-shadow: 0 4px 20px rgba(255, 56, 56, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Контейнер многостраничной системы */
+        .page-content {
+            max-width: 1400px;
+            margin: 110px auto 50px auto;
+            padding: 0 20px;
+            display: none; /* Все страницы скрыты по умолчанию */
+        }
+
+        /* Активная страница отображается */
+        .page-content.active-page {
+            display: block;
+        }
+
+        /* Сетчатая структура страниц */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+        }
+
+        /* Стеклянные панели */
+        .glass-panel {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 35px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(255, 150, 150, 0.04);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .hero-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,230,230,0.4));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .hero-text h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(45deg, var(--accent-red), var(--accent-neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 25px;
+        }
+
+        /* Бегущая строка показателей */
+        .live-ticker {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .ticker-label {
+            background: var(--accent-red);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 10px;
+            margin-right: 20px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .ticker-scroller {
+            display: flex;
+            white-space: nowrap;
+            animation: tickerSlide 25s linear infinite;
+        }
+
+        .ticker-msg {
+            margin-right: 50px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ticker-msg span { color: var(--accent-red); }
+
+        @keyframes tickerSlide {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title span {
+            font-size: 12px;
+            background: var(--accent-pink);
+            color: var(--accent-red);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* ЭЛЕМЕНТЫ СТРАНИЦЫ УСЛУГ */
+        .services-detailed-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service-card-heavy {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .service-card-heavy:hover {
+            transform: translateY(-5px);
+            background: #fff;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.03);
+        }
+
+        .badge-cost {
+            display: inline-block;
+            background: var(--text-dark);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        /* ЭЛЕМЕНТЫ СТРАНИЦЫ КЕЙСОВ */
+        .portfolio-large-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .case-card-heavy {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .case-card-heavy:hover {
+            transform: scale(1.01);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        }
+
+        .case-banner-heavy {
+            height: 160px;
+            background: linear-gradient(135deg, var(--accent-red), var(--accent-neon-pink));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .case-body-heavy {
+            padding: 25px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #f0f2f5;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-top: 10px;
+        }
+
+        /* ЭЛЕМЕНТЫ СТРАНИЦЫ КЛИЕНТОВ */
+        .crm-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .crm-table th, .crm-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .crm-table th {
+            background: rgba(0,0,0,0.02);
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .crm-table tr:last-child td { border: none; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-online { background: #e6f7ed; color: #1f9254; }
+        .status-pending { background: #fff8e6; color: #b78103; }
+
+        /* ЭЛЕМЕНТЫ СТРАНИЦЫ UX АНАЛИТИКИ */
+        .metrics-dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-mini-card {
+            background: white;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-mini-card h3 { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+        .metric-mini-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+        .log-console {
+            background: #1e1e24;
+            color: #a4b3c6;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 14px;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .log-console span { color: #4caf50; }
+        .log-console em { color: var(--accent-red); font-style: normal; }
+
+        /* Панель расчетов (Правая колонка Главной) */
+        .sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-group { margin-bottom: 20px; }
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .control-group label span { color: var(--accent-red); }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--accent-pink);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(255,56,56,0.3);
+        }
+
+        .chart-box {
+            background: #fff;
+            border: 1px solid var(--border-glass);
+            height: 130px;
+            border-radius: 16px;
+            margin-top: 15px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px;
+        }
+
+        .chart-bar {
+            width: 25px;
+            background: linear-gradient(to top, var(--accent-pink), var(--accent-rose));
+            border-radius: 6px 6px 0 0;
+            transition: height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .chart-bar:nth-child(even) { background: linear-gradient(to top, #ffe5e5, var(--accent-red)); }
+
+        .result-display {
+            background: var(--bg-glass-heavy);
+            border: 1px solid var(--accent-pink);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 10px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .metric-row:last-child { border: none; }
+        .m-title { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .m-val { font-size: 20px; font-weight: 800; }
+
+        .interactive-services-mini {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .mini-service-btn {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid var(--border-glass);
+            padding: 15px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .mini-service-btn.active {
+            background: var(--accent-pink);
+            border-color: var(--accent-rose);
+        }
+
+        /* Диалоговые окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(30, 30, 36, 0.2);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center; align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-window {
+            background: white;
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%; max-width: 450px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute; top: 20px; right: 20px;
+            background: var(--accent-pink); border: none;
+            width: 30px; height: 30px; border-radius: 50%;
+            cursor: pointer; font-weight: bold; color: var(--accent-red);
+        }
+
+        .modal-window input {
+            width: 100%; padding: 12px;
+            border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+            margin-bottom: 15px; background: #fafafa;
+        }
+
+        /* Аналитическая тепловая карта кликов */
+        .heatmap-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 25% 35%, rgba(255, 0, 127, 0.15), transparent 45%),
+                        radial-gradient(circle at 65% 55%, rgba(0, 255, 204, 0.12), transparent 40%);
+            pointer-events: none; opacity: 0; transition: 0.5s;
+        }
+
+        .heatmap-trigger {
+            background: rgba(255, 255, 255, 0.8); border: 1px solid var(--border-glass);
+            padding: 8px 14px; border-radius: 12px; font-size: 11px;
+            cursor: pointer; font-weight: 700; transition: 0.3s;
+        }
+
+        footer {
+            text-align: center; padding: 30px; font-size: 13px;
+            color: var(--text-muted); border-top: 1px solid var(--border-glass);
+            margin-top: 40px; background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 1100px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .services-detailed-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="switchPage('main')">AGIMA<span>.Платформа</span></a>
+            <nav>
+                <div class="nav-link active-tab" id="tab-main" onclick="switchPage('main')">Главный Дашборд</div>
+                <div class="nav-link" id="tab-services" onclick="switchPage('services')">Интеграция услуг</div>
+                <div class="nav-link" id="tab-portfolio" onclick="switchPage('portfolio')">Репозиторий решений</div>
+                <div class="nav-link" id="tab-crm" onclick="switchPage('crm')">Корпоративные клиенты</div>
+                <div class="nav-link" id="tab-analytics" onclick="switchPage('analytics')">UX Мониторинг</div>
+            </nav>
+            <button class="btn-header" onclick="openModal()">Инициализировать проект</button>
+        </div>
+    </header>
+
+    <main class="page-content active-page" id="page-main">
+        <section class="glass-panel hero-panel">
+            <div class="hero-text">
+                <h1>Интерактивная дизайн-система. <span>Impact.</span></h1>
+                <p>Добро пожаловать в единую многостраничную экосистему интерактивного агентства AGIMA. Настраивайте параметры комплексных цифровых услуг, управляйте репозиторием проектов и отслеживайте сквозные метрики эффективности предприятия в реальном времени.</p>
+                <button class="heatmap-trigger" onclick="toggleHeatmap()">
+                    <span style="color:var(--accent-red)">●</span> Переключить слой тепловой карты интерфейса
+                </button>
+            </div>
+            <div class="heatmap-overlay" id="uiHeatmap"></div>
+        </section>
+
+        <section class="live-ticker">
+            <div class="ticker-label">ЖИВОЙ ПОТОК ДАННЫХ</div>
+            <div class="ticker-scroller">
+                <div class="ticker-msg">АЛЬФА-БАНК ПЛАТФОРМА: <span>АКТИВНАЯ КОНВЕРСИЯ +4.2%</span></div>
+                <div class="ticker-msg">МАГНИТ B2B СИСТЕМА: <span>СТАБИЛЬНАЯ КОМПИЛЯЦИЯ ИНТЕРФЕЙСА</span></div>
+                <div class="ticker-msg">МАРКЕТИНГОВЫЕ СЕТИ ЯНДЕКС: <span>ОКУПАЕМОСТЬ ИНВЕСТИЦИЙ 185%</span></div>
+            </div>
+        </section>
+
+        <div class="dashboard-grid">
+            <div style="display:flex; flex-direction:column; gap:30px;">
+                <section class="glass-panel">
+                    <div class="panel-title">Быстрый конфигуратор услуг <span>Включение узлов в калькулятор</span></div>
+                    <div class="interactive-services-mini">
+                        <div class="mini-service-btn active" id="btn-ms1" onclick="toggleMiniService('btn-ms1', 60000, 30)">🌸 UX Аналитика и аудит</div>
+                        <div class="mini-service-btn" id="btn-ms2" onclick="toggleMiniService('btn-ms2', 90000, 15)">✨ Premium UX/UI Дизайн</div>
+                        <div class="mini-service-btn active" id="btn-ms3" onclick="toggleMiniService('btn-ms3', 50000, 45)">⚡ Performance Маркетинг</div>
+                        <div class="mini-service-btn" id="btn-ms4" onclick="toggleMiniService('btn-ms4', 120000, 20)">💫 PR & Спецпроекты</div>
+                    </div>
+                </section>
+                <section class="glass-panel">
+                    <div class="panel-title">Текущий операционный статус платформы</div>
+                    <p style="font-size:14px; color:var(--text-muted)">Все интерфейсные модули функционируют в штатном режиме. База данных репозитория подключена. Математическое ядро симуляции окупаемости инвестиций синхронизировано с параметрами регуляторов.</p>
+                </section>
+            </div>
+
+            <div class="sidebar-panel">
+                <section class="glass-panel">
+                    <div class="panel-title">Параметры симуляции</div>
+                    <div class="control-group">
+                        <label>Выделенный Бюджет: <span id="lblBudget">1 500 000 ₽</span></label>
+                        <input type="range" min="200000" max="5000000" step="50000" value="1500000" class="slider" id="inpBudget" oninput="runSimulation()">
+                    </div>
+                    <div class="control-group">
+                        <label>Период поддержки: <span id="lblMonths">5 мес.</span></label>
+                        <input type="range" min="1" max="12" step="1" value="5" class="slider" id="inpMonths" oninput="runSimulation()">
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-bar" id="bar1" style="height: 40px;"></div>
+                        <div class="chart-bar" id="bar2" style="height: 70px;"></div>
+                        <div class="chart-bar" id="bar3" style="height: 50px;"></div>
+                        <div class="chart-bar" id="bar4" style="height: 90px;"></div>
+                    </div>
+                    <div class="result-display">
+                        <div class="metric-row"><div class="m-title">Стоимость обслуживания</div><div class="m-val" id="valCost" style="color:var(--accent-red)">0 ₽</div></div>
+                        <div class="metric-row"><div class="m-title">Прогнозируемый охват</div><div class="m-val" id="valAudience">0</div></div>
+                        <div class="metric-row"><div class="m-title">Коэффициент окупаемости</div><div class="m-val" id="valRoi" style="color:#4caf50;">0%</div></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div class="page-content" id="page-services">
+        <section class="glass-panel">
+            <div class="panel-title">Центр интеграции комплексных услуг и технологических решений</div>
+            <div class="services-detailed-grid">
+                <div class="service-card-heavy">
+                    <h3>🌸 UX/UI Аналитика</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Проведение комплексного юзабилити-аудита, анализ тепловых карт кликов, выявление узких мест в конверсии и оптимизация путей пользователей.</p>
+                    <div class="badge-cost">от 60 000 ₽ / эт.</div>
+                </div>
+                <div class="service-card-heavy">
+                    <h3>✨ Высококлассный Дизайн</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Проектирование интерактивных интерфейсов, проектирование адаптивных дизайн-систем премиального уровня для веб-платформ и приложений.</p>
+                    <div class="badge-cost">от 90 000 ₽ / эт.</div>
+                </div>
+                <div class="service-card-heavy">
+                    <h3>⚡ Performance Маркетинг</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Запуск сквозной аналитики, привлечение целевого b2b трафика, ведение контекстных и таргетированных рекламных кампаний с жестким ROI контролем.</p>
+                    <div class="badge-cost">от 50 000 ₽ / мес.</div>
+                </div>
+                <div class="service-card-heavy">
+                    <h3>💫 PR & Спецпроекты</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Разработка уникальных интерактивных механик для медиа-рынка, создание вирусного контента и повышение цифрового присутствия бренда.</p>
+                    <div class="badge-cost">от 120 000 ₽</div>
+                </div>
+                <div class="service-card-heavy">
+                    <h3>🛡️ Нагрузочный Аудит</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Тестирование устойчивости ИТ-инфраструктуры к пиковым нагрузкам, оптимизация серверного отклика и баз данных крупных систем.</p>
+                    <div class="badge-cost">от 80 000 ₽</div>
+                </div>
+                <div class="service-card-heavy">
+                    <h3>📊 Сквозная Аналитика</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:10px;">Интеграция корпоративных CRM-систем, построение автоматических дашбордов отчетности для топ-менеджмента предприятий.</p>
+                    <div class="badge-cost">от 95 000 ₽</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-content" id="page-portfolio">
+        <section class="glass-panel">
+            <div class="panel-title">Архив реализованных архитектурных и интерфейсных решений</div>
+            <div class="portfolio-large-grid">
+                <div class="case-card-heavy">
+                    <div class="case-banner-heavy">ALFA BANK</div>
+                    <div class="case-body-heavy">
+                        <h4>Альфа-Банк Корпоративный Бизнес</h4>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Редизайн и оптимизация фронтенд архитектуры личных кабинетов для b2b клиентов. Скорость загрузки интерфейса выросла на 35%.</p>
+                        <span class="tech-tag">React</span><span class="tech-tag">UX Audit</span><span class="tech-tag">Enterprise</span>
+                    </div>
+                </div>
+                <div class="case-card-heavy">
+                    <div class="case-banner-heavy" style="background: linear-gradient(135deg, #7f00ff, #e100ff);">YANDEX</div>
+                    <div class="case-body-heavy">
+                        <h4>Яндекс Маркет Промо-Интеграция</h4>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Создание интерактивной сквозной воронки распределения трафика для сезонных федеральных промо-кампаний.</p>
+                        <span class="tech-tag">Node.js</span><span class="tech-tag">Performance</span><span class="tech-tag">Big Data</span>
+                    </div>
+                </div>
+                <div class="case-card-heavy">
+                    <div class="case-banner-heavy" style="background: linear-gradient(135deg, #11998e, #38ef7d);">МАГНИТ</div>
+                    <div class="case-body-heavy">
+                        <h4>Магнит Экосистема Доставки</h4>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Проектирование интерфейсных решений для мобильной платформы сборки и распределения заказов внутри торговой сети.</p>
+                        <span class="tech-tag">UI/UX Kit</span><span class="tech-tag">Mobile</span><span class="tech-tag">System Design</span>
+                    </div>
+                </div>
+                <div class="case-card-heavy">
+                    <div class="case-banner-heavy" style="background: linear-gradient(135deg, #ff9900, #ff5500);">X5 GROUP</div>
+                    <div class="case-body-heavy">
+                        <h4>X5 B2B Партнерская Сеть</h4>
+                        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Автоматизация процессов лидогенерации и распределения рекламного трафика внутри внутренних цифровых каналов.</p>
+                        <span class="tech-tag">CRM Sync</span><span class="tech-tag">Traffic Control</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="page-content" id="page-crm">
+        <section class="glass-panel">
+            <div class="panel-title">Мониторинг активности стратегических партнеров (CRM)</div>
+            <table class="crm-table">
+                <thead>
+                    <tr>
+                        <th>Идентификатор Партнера</th>
+                        <th>Активный Контракт</th>
+                        <th>Объем Инвестиций</th>
+                        <th>Индекс Удовлетворенности (CSI)</th>
+                        <th>Текущий статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>АО «Альфа-Банк»</strong></td>
+                        <td>Интеграция Личных Кабинетов</td>
+                        <td>3 400 000 ₽</td>
+                        <td><span style="color:#4caf50; font-weight:700;">9.8 / 10</span></td>
+                        <td><span class="status-pill status-online">Проект Активен</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ООО «Яндекс Маркет»</strong></td>
+                        <td>Performance Кампании Воронок</td>
+                        <td>2 150 000 ₽</td>
+                        <td><span style="color:#4caf50; font-weight:700;">9.4 / 10</span></td>
+                        <td><span class="status-pill status-online">Проект Активен</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>АО «Тандер» (Магнит)</strong></td>
+                        <td>UX Оптимизация Платформы</td>
+                        <td>1 850 000 ₽</td>
+                        <td><span style="color:#b78103; font-weight:700;">8.9 / 10</span></td>
+                        <td><span class="status-pill status-pending">Этап Приемки</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>X5 Retail Group</strong></td>
+                        <td>Сквозная Автоматизация CRM</td>
+                        <td>4 200 000 ₽</td>
+                        <td><span style="color:#4caf50; font-weight:700;">9.6 / 10</span></td>
+                        <td><span class="status-pill status-online">Проект Активен</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="page-content" id="page-analytics">
+        <section class="glass-panel">
+            <div class="panel-title">Центр Мониторинга Пользовательских Метрик (UX Аналитика)</div>
+            
+            <div class="metrics-dashboard-row">
+                <div class="metric-mini-card"><h3>94.8%</h3><p>Индекс Удобства (SUS)</p></div>
+                <div class="metric-mini-card"><h3>0.84 сек</h3><p>Средний отклик интерфейса</p></div>
+                <div class="metric-mini-card"><h3>4 120</h3><p>Логируемых кликов / час</p></div>
+                <div class="metric-mini-card" style="border-color:var(--accent-rose)"><h3>+14.2%</h3><p>Прирост целевых действий</p></div>
+            </div>
+
+            <div class="panel-title" style="font-size:14px; margin-bottom:15px;">Журнал регистрации событий ядра (System Events Log)</div>
+            <div class="log-console" id="consoleLog">
+                [<span>SYSTEM</span>] Инициализация ядра веб-платформы AGIMA... Успешно.<br>
+                [<span>UX_LOG</span>] Подключение слоя эмуляции тепловой карты интерфейса кликов.<br>
+                [<span>CALC_ENGINE</span>] Математический модуль симуляции параметров загружен (Базовый тариф: 150 000 ₽).<br>
+                [<span>CRM</span>] Синхронизация с реестром партнеров (Альфа-Банк, Яндекс, Магнит, X5)... Синхронизировано.<br>
+                [<span>SYSTEM</span>] Платформа переведена в режим ожидания действий пользователя.
+            </div>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modalForm">
+        <div class="modal-window">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <h3>Инициализировать проект</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Введите параметры для отправки технического задания в CRM платформы.</p>
+            <input type="text" placeholder="Ваше имя / Компания">
+            <input type="email" placeholder="Контактный Email">
+            <button class="btn-header" style="width:100%; padding:14px;" onclick="registerProjectInConsole()">Отправить запрос</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Интерактивное рекламное агентство AGIMA. Единая дизайн-система корпоративных интерфейсов.</p>
+    </footer>
+
+    <script>
+        let extraCost = 110000; 
+        let extraRoi = 75;
+
+        // Функция переключения страниц (Архитектура SPA)
+        function switchPage(pageId) {
+            // Скрываем все страницы
+            let pages = document.querySelectorAll('.page-content');
+            pages.forEach(p => p.classList.remove('active-page'));
+
+            // Убираем активные классы у вкладок меню
+            let links = document.querySelectorAll('.nav-link');
+            links.forEach(l => l.classList.remove('active-tab'));
+
+            // Активируем нужную страницу и вкладку
+            document.getElementById('page-' + pageId).classList.add('active-page');
+            document.getElementById('tab-' + pageId).classList.add('active-tab');
+
+            // Запись лога в консоль на 5 странице
+            writeLog("Переход пользователя на экран системы: " + pageId.toUpperCase());
+        }
+
+        // Логика калькулятора (Главная страница)
+        function toggleMiniService(btnId, costValue, roiValue) {
+            let btn = document.getElementById(btnId);
+            if(btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                extraCost -= costValue;
+                extraRoi -= roiValue;
+                writeLog("Отключение сервисного узла. Стоимость снижена на " + costValue + " ₽");
+            } else {
+                btn.classList.add('active');
+                extraCost += costValue;
+                extraRoi += roiValue;
+                writeLog("Подключение сервисного узла. Стоимость увеличена на " + costValue + " ₽");
+            }
+            runSimulation(); 
+        }
+
+        function runSimulation() {
+            let budget = parseInt(document.getElementById('inpBudget').value);
+            let months = parseInt(document.getElementById('inpMonths').value);
+
+            document.getElementById('lblBudget').innerText = budget.toLocaleString('ru-RU') + " ₽";
+            document.getElementById('lblMonths').innerText = months + " мес.";
+
+            let calculatedCost = 150000 + (months * 30000) + extraCost;
+            document.getElementById('valCost').innerText = calculatedCost.toLocaleString('ru-RU') + " ₽";
+
+            let audience = Math.floor((budget / 4) * (1 + (months * 0.05)));
+            document.getElementById('valAudience').innerText = audience.toLocaleString('ru-RU');
+
+            let finalRoi = 110 + (months * 10) + extraRoi;
+            document.getElementById('valRoi').innerText = finalRoi + "%";
+
+            // Динамический пересчет высоты столбцов графика
+            document.getElementById('bar1').style.height = Math.min(110, (months * 9)) + "px";
+            document.getElementById('bar2').style.height = Math.min(110, (calculatedCost / 14000)) + "px";
+            document.getElementById('bar3').style.height = Math.min(110, (finalRoi / 3.2)) + "px";
+            document.getElementById('bar4').style.height = Math.min(110, (budget / 48000)) + "px";
+        }
+
+        function toggleHeatmap() {
+            let overlay = document.getElementById('uiHeatmap');
+            let isVisible = overlay.style.opacity == "1";
+            overlay.style.opacity = isVisible ? "0" : "1";
+            writeLog("Слой аналитической тепловой карты " + (isVisible ? "деактивирован" : "активирован"));
+        }
+
+        function openModal() { document.getElementById('modalForm').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modalForm').style.display = 'none'; }
+
+        function registerProjectInConsole() {
+            alert('Заявка успешно зарегистрирована в CRM-системе платформы.');
+            closeModal();
+            writeLog("<em>[CRM_ALERT]</em> Получена новая внешняя заявка. Запущена инициализация сессии.");
+        }
+
+        function writeLog(message) {
+            let consoleElem = document.getElementById('consoleLog');
+            if(consoleElem) {
+                let time = new Date().toLocaleTimeString();
+                consoleElem.innerHTML += "<br>[" + time + "] " + message;
+                consoleElem.scrollTop = consoleElem.scrollHeight; // Прокрутка вниз
+            }
+        }
+
+        window.onload = function() {
+            runSimulation();
+        };
+    </script>
+</body>
+</html>
